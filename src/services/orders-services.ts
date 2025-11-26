@@ -316,7 +316,7 @@ export class OrdersService extends BaseService {
         query = query.limit(options.limit);
       } else {
         const page = params?.pagination?.page ?? 1;
-        const perPage = params?.pagination?.perPage ?? 10;
+        const perPage = params?.pagination?.perPage ?? 1000;
         const from = (page - 1) * perPage;
         const to = from + perPage - 1;
         query = query.range(from, to);

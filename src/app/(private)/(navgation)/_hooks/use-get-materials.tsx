@@ -10,10 +10,6 @@ export function useGetMaterials() {
   const query = useQuery<Material[]>({
     queryKey: ["materials"],
     queryFn: getMaterialsAction,
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
   });
 
   useEffect(() => {
