@@ -98,7 +98,7 @@ export const mapOrderToCuttingPlanDoc = (
       sheetW,
       sheetH,
       items,
-      margin: 1,
+      margin: 0,
       pieceSpacing: 0,
       allowRotate: mat.cutDirection === "VH",
       wastePercentage: mat.wastePercentage * 100,

@@ -44,8 +44,8 @@ const optimizerConfigCloset = {
 const optimizerConfigPainel = {
   sheetW: 275,
   sheetH: 183,
-  margin: 1,
-  pieceSpacing: 1,
+  margin: 0,
+  pieceSpacing: 0,
   allowRotate: true,
   wastePercentage: 6,
   items: [
