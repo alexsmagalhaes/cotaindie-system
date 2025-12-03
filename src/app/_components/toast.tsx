@@ -46,6 +46,7 @@ export const Toast = () => {
           margin: 0,
           boxShadow: "none",
           background: "transparent",
+          pointerEvents: "none",
         },
       }}
       containerStyle={{

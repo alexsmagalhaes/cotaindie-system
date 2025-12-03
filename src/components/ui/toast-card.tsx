@@ -27,7 +27,7 @@ function ToastCard({
   return (
     <div
       className={cn(
-        "rounded-default flex w-full justify-between gap-6 border-b-[0.1875rem] bg-white p-6 px-4 py-3 shadow-[0_0.5rem_3rem_-1rem_rgba(0,0,0,0.40)] lg:ml-auto lg:w-[22.5rem] lg:shadow-[0_0.5rem_3rem_-0.75rem_rgba(0,0,0,0.12)]",
+        "rounded-default pointer-events-auto flex w-full justify-between gap-6 border-b-[0.1875rem] bg-white p-6 px-4 py-3 shadow-[0_0.5rem_3rem_-1rem_rgba(0,0,0,0.40)] lg:ml-auto lg:w-[22.5rem] lg:shadow-[0_0.5rem_3rem_-0.75rem_rgba(0,0,0,0.12)]",
         statusBorder[status],
         className,
       )}
