@@ -37,15 +37,19 @@ export const FavButtonWrapper = ({ children }: FavButtonWrapperProps) => (
 );
 
 export const SaveButton = () => {
-  const { execute: handleSave } = useUpsertOrder();
+  const { execute: handleSave, isPending: isPendingUpsert } = useUpsertOrder();
 
   return (
     <Button
       onClick={handleSave}
       square
+      disabled={isPendingUpsert}
       className="group h-[3.25rem] min-w-[3.25rem] !rounded-[0.5rem] shadow-[0_0_32px_0_rgba(0,0,0,0.16)]"
     >
-      <Icon name="folder_check" className="text-white" />
+      {!isPendingUpsert && <Icon name="folder_check" className="text-white" />}
+      {isPendingUpsert && (
+        <Icon name="progress_activity" className="animate-spin" />
+      )}
     </Button>
   );
 };
@@ -135,7 +139,17 @@ export const OptionsButton = () => {
         >
           {order.id && (
             <DropdownMenuItem onClick={handleCopy} disabled={isPendingCopy}>
-              <Icon name="file_copy" /> Fazer cópia
+              {!isPendingCopy && (
+                <>
+                  <Icon name="file_copy" /> Fazer cópia Salvar
+                </>
+              )}
+              {isPendingCopy && (
+                <>
+                  <Icon name="progress_activity" className="animate-spin" />{" "}
+                  Copiando...
+                </>
+              )}
             </DropdownMenuItem>
           )}
           <DropdownMenuItem onClick={handleGenerateQuote}>

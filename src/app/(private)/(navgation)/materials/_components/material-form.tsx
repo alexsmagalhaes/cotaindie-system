@@ -1,5 +1,6 @@
 "use client";
 
+import { FormWrapper } from "@/app/_components/form-wrapper";
 import { DialogBody } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,12 +25,13 @@ export const MateriaForm = ({ material }: { material?: Material }) => {
   });
 
   const onSubmit = (values: z.infer<typeof materialSchema>) => {
+    if (isPending) return;
     execute(values);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FormWrapper onSubmit={form.handleSubmit(onSubmit)}>
         <DialogBody className="grid grid-cols-1 items-start gap-3 lg:grid-cols-4">
           <MaterialBasicFields />
         </DialogBody>
@@ -38,7 +40,7 @@ export const MateriaForm = ({ material }: { material?: Material }) => {
         </DialogBody>
         <MaterialCutFields />
         <MaterialActions isPending={isPending} />
-      </form>
+      </FormWrapper>
     </Form>
   );
 };

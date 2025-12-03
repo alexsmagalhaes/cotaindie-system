@@ -1,5 +1,6 @@
 "use client";
 
+import { FormWrapper } from "@/app/_components/form-wrapper";
 import { DialogBody } from "@/components/ui/dialog";
 import {
   Form,
@@ -96,7 +97,7 @@ export const PieceForm = ({
 
   return (
     <Form {...form}>
-      <form id={id}>
+      <FormWrapper id={id}>
         <DialogBody className="grid grid-cols-1 items-start gap-3 lg:grid-cols-6">
           <FormField
             control={form.control}
@@ -389,7 +390,7 @@ export const PieceForm = ({
         )}
 
         <PieceFormActions onSubmit={() => onSubmit(form.getValues())} />
-      </form>
+      </FormWrapper>
     </Form>
   );
 };

@@ -38,8 +38,20 @@ export const DeleteDialog = ({
           onClick={handleDelete}
           disabled={isPending}
         >
-          <Icon name="delete" />
-          Deletar
+          {!isPending && (
+            <>
+              {" "}
+              <Icon name="delete" />
+              Apagar
+            </>
+          )}
+          {isPending && (
+            <>
+              {" "}
+              <Icon name="progress_activity" className="animate-spin" />{" "}
+              Apagando...
+            </>
+          )}
         </Button>
         <DialogClose asChild>
           <Button variant="secondary" className="grow">
