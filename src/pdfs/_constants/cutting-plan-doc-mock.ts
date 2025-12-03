@@ -14,49 +14,75 @@ const mockClient = {
 
 const optimizerConfigCozinha = {
   sheetW: 275,
-  sheetH: 183,
-  margin: 1,
-  pieceSpacing: 1,
+  sheetH: 185,
+  margin: 0,
+  pieceSpacing: 0,
   allowRotate: true,
   wastePercentage: 5,
   items: [
-    { name: "Porta de armário", w: 70, h: 45 },
-    { name: "Fundo de balcão", w: 120, h: 55 },
+    { name: "Porta superior", w: 70, h: 45 },
+    { name: "Porta inferior", w: 60, h: 50 },
+    { name: "Tampo de pia", w: 120, h: 55 },
+    { name: "Lateral do gabinete", w: 85, h: 60 },
+    { name: "Fundo do balcão", w: 120, h: 70 },
     { name: "Prateleira interna", w: 55, h: 45 },
+    { name: "Divisão vertical", w: 75, h: 50 },
+    { name: "Base de gaveta", w: 45, h: 35 },
+    { name: "Frente de gaveta", w: 30, h: 15 },
+    { name: "Tampa lateral gaveta", w: 40, h: 14 },
+    { name: "Suporte pequeno", w: 20, h: 10 },
+    { name: "Divisor de talher", w: 28, h: 18 },
+    { name: "Nicho auxiliar", w: 25, h: 20 },
+    { name: "Prateleira pequena", w: 50, h: 18 },
   ],
 };
 
 const optimizerConfigCloset = {
   sheetW: 275,
-  sheetH: 183,
-  margin: 1,
-  pieceSpacing: 1,
+  sheetH: 185,
+  margin: 0,
+  pieceSpacing: 0,
   allowRotate: true,
   wastePercentage: 4,
   items: [
     { name: "Lateral grande", w: 220, h: 45 },
     { name: "Fundo do armário", w: 200, h: 80 },
-    { name: "Prateleira interna", w: 80, h: 45 },
-    { name: "Porta do armário", w: 210, h: 40 },
+    { name: "Prateleira grande", w: 120, h: 45 },
+    { name: "Divisória interna", w: 85, h: 45 },
+    { name: "Porta do closet", w: 210, h: 40 },
+    { name: "Divisória estreita", w: 30, h: 45 },
+    { name: "Prateleira curta", w: 60, h: 30 },
+    { name: "Apoio estrutural", w: 30, h: 25 },
+    { name: "Peça técnica", w: 22, h: 14 },
+    { name: "Reforço vertical", w: 70, h: 10 },
+    { name: "Mini prateleira", w: 45, h: 20 },
+    { name: "Suporte de encaixe", w: 20, h: 12 },
   ],
 };
 
 const optimizerConfigPainel = {
   sheetW: 275,
-  sheetH: 183,
+  sheetH: 185,
   margin: 0,
   pieceSpacing: 0,
   allowRotate: true,
   wastePercentage: 6,
   items: [
-    { name: "Painel principal", w: 180, h: 120 },
+    { name: "Painel principal", w: 200, h: 180 },
+    { name: "Contrapainel", w: 190, h: 170 },
     { name: "Nicho decorativo", w: 60, h: 30 },
+    { name: "Nicho auxiliar", w: 50, h: 25 },
     { name: "Base inferior", w: 180, h: 40 },
     { name: "Prateleira flutuante", w: 120, h: 25 },
+    { name: "Friso decorativo", w: 60, h: 8 },
+    { name: "Borda acabamento", w: 80, h: 10 },
+    { name: "Suporte de fixação", w: 30, h: 15 },
+    { name: "Apoio de fundo", w: 50, h: 20 },
+    { name: "Reforço para TV", w: 40, h: 25 },
+    { name: "Peça técnica painel", w: 25, h: 18 },
   ],
 };
 
-// Calcula os planos de corte
 const planCozinha = new CuttingPlan(optimizerConfigCozinha).calculate({
   includeImages: true,
 });
@@ -76,7 +102,7 @@ const materialCozinha: MaterialPlanProps = {
   pieces: [],
   sheets: planCozinha.base64Images.map((img, i) => ({
     id: `s${i + 1}`,
-    label: `Chapa ${i + 1} (${optimizerConfigCozinha.sheetW}x${optimizerConfigCozinha.sheetH} cm)`,
+    label: `Chapa ${i + 1} (275x185 cm)`,
     imageBase64: img,
   })),
 };
@@ -95,13 +121,13 @@ const materialCloset: MaterialPlanProps = {
   cutDirectionLabel: "Corte: Horizontal e vertical",
   pieces: [],
   sheets: planCloset.base64Images.map((img, i) => ({
-    id: `s${i + 3}`,
-    label: `Chapa ${i + 3} (${optimizerConfigCloset.sheetW}x${optimizerConfigCloset.sheetH} cm)`,
+    id: `s${i + 50}`,
+    label: `Chapa ${i + 50} (275x185 cm)`,
     imageBase64: img,
   })),
 };
 materialCloset.pieces = optimizerConfigCloset.items.map((piece, i) => ({
-  id: `p${i + 4}`,
+  id: `p${i + 100}`,
   material: materialCloset,
   label: `- ${piece.name} (${piece.w}x${piece.h} cm)`,
   qtde: 1,
@@ -115,13 +141,13 @@ const materialPainel: MaterialPlanProps = {
   cutDirectionLabel: "Corte: Horizontal e vertical",
   pieces: [],
   sheets: planPainel.base64Images.map((img, i) => ({
-    id: `s${i + 6}`,
-    label: `Chapa ${i + 6} (${optimizerConfigPainel.sheetW}x${optimizerConfigPainel.sheetH} cm)`,
+    id: `s${i + 100}`,
+    label: `Chapa ${i + 100} (275x185 cm)`,
     imageBase64: img,
   })),
 };
 materialPainel.pieces = optimizerConfigPainel.items.map((piece, i) => ({
-  id: `p${i + 8}`,
+  id: `p${i + 200}`,
   material: materialPainel,
   label: `- ${piece.name} (${piece.w}x${piece.h} cm)`,
   qtde: 1,
