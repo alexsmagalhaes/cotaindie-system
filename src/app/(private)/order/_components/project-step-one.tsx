@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { DialogBody } from "@/components/ui/dialog";
 import {
   FormControl,
@@ -6,6 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -100,6 +102,14 @@ export const ProjectStepOne = () => {
                 {!!pieces.length && <PiecesTable pieces={pieces} />}
               </div>
             </ScrollArea>
+            {pieces.length > 0 && (
+              <PiecesActions>
+                <Button variant="secondary" className="w-full">
+                  <Icon name="add_2" />
+                  Nova peça
+                </Button>
+              </PiecesActions>
+            )}
           </PiecesContent>
           <PiecesTotal />
         </ProjectPieces>

@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ToastCard } from "@/components/ui/toast-card";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useId, useRef } from "react";
@@ -30,6 +31,7 @@ import {
   type FieldValues,
   type UseFormReturn,
 } from "react-hook-form";
+import toast from "react-hot-toast";
 import { NumericFormat } from "react-number-format";
 import type z from "zod";
 import { measureMap } from "../../(navgation)/_constants/mesure-map";
@@ -87,11 +89,33 @@ export const PieceForm = ({
 
   const onSubmit = async (values: z.infer<typeof pieceSchema>) => {
     const isValid = await form.trigger();
-
     if (!isValid) return;
 
     append(values);
-    form.reset(getPiecetDefaultValues());
+
+    if (values.material.measureType === "M2") {
+      form.setValue("measure", [0, 0]);
+    }
+
+    if (values.material.measureType === "ML") {
+      form.setValue("measure", [0]);
+    }
+
+    if (values.material.measureType === "UN") {
+      form.setValue("measure", [1]);
+    }
+
+    form.setValue("name", "");
+    form.setValue("qtde", 1);
+
+    toast((t) => (
+      <ToastCard
+        id={t.id}
+        status="success"
+        title="Peças adicionadas!"
+        text="O projeto recebeu as novas peças."
+      />
+    ));
   };
 
   return (
@@ -255,28 +279,21 @@ export const PieceForm = ({
               >
                 <FormLabel>Quantidade</FormLabel>
                 <FormControl>
-                  <Select
-                    value={field.value ? String(field.value) : ""}
-                    onValueChange={(val) => field.onChange(Number(val))}
-                  >
-                    <SelectTrigger
-                      truncate
-                      placeholder="Qtde..."
-                      className="justify-between"
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent align="end">
-                      {Array.from({ length: 10 }).map((_, index) => {
-                        const value = index + 1;
-                        return (
-                          <SelectItem key={value} value={String(value)}>
-                            {value}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
+                  <NumericFormat
+                    value={field.value ?? 0}
+                    onValueChange={(values) => {
+                      field.onChange(values.floatValue ?? 0);
+                    }}
+                    allowNegative={false}
+                    decimalScale={0}
+                    suffix={` ${field.value === 1 ? "peça" : "peças"}`}
+                    placeholder="Qtde..."
+                    customInput={Input}
+                    isAllowed={(values) => {
+                      const { floatValue } = values;
+                      return floatValue === undefined || floatValue >= 1;
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -335,7 +352,7 @@ export const PieceForm = ({
                     </FormItem>
                   )}
                 />
-                <InputDisabled className="shrink-0 lg:mt-[1.375rem]">
+                <InputDisabled className="shrink-0 lg:mt-5.5">
                   <Icon
                     name={
                       cutDirection === "VH" ? "grid_on" : "table_rows_narrow"
