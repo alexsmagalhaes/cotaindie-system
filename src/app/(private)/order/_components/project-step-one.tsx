@@ -90,15 +90,16 @@ export const ProjectStepOne = () => {
             <ScrollArea className="grow">
               <div className="max-w-[calc(100vw-2rem)]">
                 {!pieces.length && (
-                  <OrderEmptyTable
-                    title="Adicione uma peça"
-                    text="Adicione uma peça a primeira peça do projeto."
-                  />
+                  <PiecesActions>
+                    <OrderEmptyTable
+                      title="Clique para adicionar uma peça"
+                      text="Adicione uma peça a primeira peça do projeto."
+                    />
+                  </PiecesActions>
                 )}
                 {!!pieces.length && <PiecesTable pieces={pieces} />}
               </div>
             </ScrollArea>
-            <PiecesActions />
           </PiecesContent>
           <PiecesTotal />
         </ProjectPieces>
