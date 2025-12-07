@@ -255,28 +255,21 @@ export const PieceForm = ({
               >
                 <FormLabel>Quantidade</FormLabel>
                 <FormControl>
-                  <Select
-                    value={field.value ? String(field.value) : ""}
-                    onValueChange={(val) => field.onChange(Number(val))}
-                  >
-                    <SelectTrigger
-                      truncate
-                      placeholder="Qtde..."
-                      className="justify-between"
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent align="end">
-                      {Array.from({ length: 10 }).map((_, index) => {
-                        const value = index + 1;
-                        return (
-                          <SelectItem key={value} value={String(value)}>
-                            {value}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
+                  <NumericFormat
+                    value={field.value ?? 0}
+                    onValueChange={(values) => {
+                      field.onChange(values.floatValue ?? 0);
+                    }}
+                    allowNegative={false}
+                    decimalScale={0}
+                    suffix={` ${field.value === 1 ? "peça" : "peças"}`}
+                    placeholder="Qtde..."
+                    customInput={Input}
+                    isAllowed={(values) => {
+                      const { floatValue } = values;
+                      return floatValue === undefined || floatValue >= 1;
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
