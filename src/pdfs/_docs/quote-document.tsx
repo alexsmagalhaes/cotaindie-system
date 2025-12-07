@@ -51,7 +51,6 @@ interface QuoteDataProps {
   code: string;
   name: string;
   generationDate: string;
-  expirationDays: number;
 
   projects: QuoteProjectProps[];
 
@@ -94,7 +93,6 @@ export const QuoteDocument = ({
           pageNumber={pageNumber}
           totalPages={totalPages}
           dateTime={order.generationDate}
-          validity={order.expirationDays}
         />
       )}
     >

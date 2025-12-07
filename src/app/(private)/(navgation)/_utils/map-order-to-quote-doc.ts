@@ -67,7 +67,6 @@ export const mapOrderToQuoteDoc = (
       code: order.code ?? "",
       name: order.name ?? "",
       generationDate: formatDate(order.initialDate),
-      expirationDays: order.expirationDays ?? 0,
       projects: quoteProjects,
       included: order.included || "",
       excluded: order.excluded || "",

@@ -6,7 +6,6 @@ interface FooterProps {
   pageNumber: number;
   totalPages: number;
   dateTime?: string;
-  validity?: number;
 }
 
 export const Footer = ({
@@ -14,15 +13,11 @@ export const Footer = ({
   pageNumber,
   totalPages,
   dateTime,
-  validity,
 }: Readonly<FooterProps>) => {
   let quoteText = "";
 
   if (dateTime) {
     quoteText = `Orçamento gerado em ${dateTime}`;
-    if (validity) {
-      quoteText += ` — Válido por ${validity} dias`;
-    }
   }
 
   const defaultText = "";

@@ -19,7 +19,6 @@ export function mapOrderFromSupabase(rawOrder: any): Order {
       city: rawOrder.client?.city,
       cep: rawOrder.client?.cep ?? "",
     },
-    expirationDays: rawOrder.expiration_days,
     initialDate: rawOrder.initial_date,
     approvedAt: rawOrder.approved_at ?? null,
     projects: (rawOrder.projects ?? []).map((project: any) => ({
