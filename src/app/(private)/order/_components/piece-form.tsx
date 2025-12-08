@@ -18,6 +18,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSearchList,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -206,11 +207,17 @@ export const PieceForm = ({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent align="end">
-                      {materials.map((opt) => (
-                        <SelectItem key={opt.id} value={opt.id}>
-                          {opt.name}
-                        </SelectItem>
-                      ))}
+                      <SelectSearchList filterKey="name">
+                        {materials.map((item) => (
+                          <SelectItem
+                            key={item.id}
+                            value={item.id}
+                            data-item={item}
+                          >
+                            {item.name}
+                          </SelectItem>
+                        ))}
+                      </SelectSearchList>
                     </SelectContent>
                   </Select>
                 </FormControl>

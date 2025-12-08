@@ -12,6 +12,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSearchList,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -50,12 +51,18 @@ export const MaterialBasicFields = () => {
                 <SelectTrigger placeholder="Selecionar categoria">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {categories.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.name}
-                    </SelectItem>
-                  ))}
+                <SelectContent hideScrollUpButton>
+                  <SelectSearchList filterKey="name">
+                    {categories.map((item) => (
+                      <SelectItem
+                        key={item.id}
+                        value={item.id}
+                        data-item={item}
+                      >
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectSearchList>
                 </SelectContent>
               </Select>
             </FormControl>
