@@ -1,3 +1,5 @@
+type CutDirection = "V" | "VH" | "H";
+
 interface Material {
   id: string;
   code: string;
@@ -9,5 +11,5 @@ interface Material {
   wasteTax: number;
   baseValue: number;
   measure: [number] | [number, number];
-  cutDirection?: "V" | "VH";
+  cutDirection?: CutDirection;
 }

@@ -27,7 +27,7 @@ export const MaterialCutFields = () => {
   if (measureType === "ML") {
     return (
       <DialogBody className="flex flex-col gap-3 lg:grid lg:grid-cols-1 lg:items-start">
-        <InputDisabled className="col-span-1 lg:mt-[1.375rem]">
+        <InputDisabled className="col-span-1 lg:mt-5.5">
           <Icon name="table_rows" />
           Comprimento horizontal
         </InputDisabled>
@@ -36,7 +36,7 @@ export const MaterialCutFields = () => {
   }
 
   if (measureType === "M2") {
-    const cutDirection = form.watch("cutDirection") as "VH" | "V";
+    const cutDirection = form.watch("cutDirection") as CutDirection;
 
     return (
       <DialogBody className="flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:items-start">
@@ -57,6 +57,7 @@ export const MaterialCutFields = () => {
                   <SelectContent>
                     <SelectItem value="VH">{cutDirectionMap["VH"]}</SelectItem>
                     <SelectItem value="V">{cutDirectionMap["V"]}</SelectItem>
+                    <SelectItem value="H">{cutDirectionMap["H"]}</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -64,10 +65,10 @@ export const MaterialCutFields = () => {
             </FormItem>
           )}
         />
-        <InputDisabled className="col-span-1 lg:mt-[1.375rem]">
-          <Icon
-            name={cutDirection === "VH" ? "grid_on" : "table_rows_narrow"}
-          />
+        <InputDisabled className="col-span-1 lg:mt-5.5">
+          {cutDirection === "VH" && <Icon name={"grid_on"} />}
+          {cutDirection === "H" && <Icon name={"table_rows_narrow"} />}
+          {cutDirection === "V" && <Icon name={"calendar_view_week"} />}
           {cutDirectionMap[cutDirection]}
         </InputDisabled>
       </DialogBody>

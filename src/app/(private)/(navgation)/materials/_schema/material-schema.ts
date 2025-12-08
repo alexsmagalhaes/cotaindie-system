@@ -20,7 +20,7 @@ export const materialSchema = z.object({
       z.number().positive("Deve ser maior que 0"),
     ]),
   ]),
-  cutDirection: z.enum(["V", "VH"]).optional(),
+  cutDirection: z.enum(["V", "VH", "H"]).optional(),
 });
 
 export const getMaterialDefaultValues = (
