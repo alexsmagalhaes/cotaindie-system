@@ -21,9 +21,19 @@ export const MaterialActions = ({ isPending }: { isPending: boolean }) => {
 
   return (
     <DialogFooter className="flex flex-row justify-end gap-3">
-      <Button type="submit">
-        <Icon name="folder_check" />
-        Salvar
+      <Button type="submit" disabled={isPending}>
+        {!isPending && (
+          <>
+            <Icon name="folder_check" />
+            Salvar
+          </>
+        )}
+        {isPending && (
+          <>
+            <Icon name="progress_activity" className="animate-spin" />{" "}
+            Salvando...
+          </>
+        )}
       </Button>
       {id && (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -33,7 +43,10 @@ export const MaterialActions = ({ isPending }: { isPending: boolean }) => {
               Apagar
             </Button>
           </DialogTrigger>
-          <DeleteDialog handleDelete={() => execute(id)} />
+          <DeleteDialog
+            handleDelete={() => execute(id)}
+            isPending={isPendingDelete}
+          />
         </Dialog>
       )}
       <DialogClose asChild>

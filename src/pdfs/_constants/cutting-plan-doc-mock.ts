@@ -30,30 +30,50 @@ const itemsCozinha = [
 
 const optimizerConfigBranco = {
   sheetW: 275,
-  sheetH: 183,
-  margin: 1,
-  pieceSpacing: 0.4,
-  orientation: "VH" as const,
+  sheetH: 185,
+  margin: 0,
+  pieceSpacing: 0,
+  allowRotate: true,
   wastePercentage: 5,
-  items: itemsCozinha,
+  items: [
+    { name: "Porta superior", w: 70, h: 45 },
+    { name: "Porta inferior", w: 60, h: 50 },
+    { name: "Tampo de pia", w: 120, h: 55 },
+    { name: "Lateral do gabinete", w: 85, h: 60 },
+    { name: "Fundo do balcão", w: 120, h: 70 },
+    { name: "Prateleira interna", w: 55, h: 45 },
+    { name: "Divisão vertical", w: 75, h: 50 },
+    { name: "Base de gaveta", w: 45, h: 35 },
+    { name: "Frente de gaveta", w: 30, h: 15 },
+    { name: "Tampa lateral gaveta", w: 40, h: 14 },
+    { name: "Suporte pequeno", w: 20, h: 10 },
+    { name: "Divisor de talher", w: 28, h: 18 },
+    { name: "Nicho auxiliar", w: 25, h: 20 },
+    { name: "Prateleira pequena", w: 50, h: 18 },
+  ],
 };
 
-const itemsRoupeiro = [
-  ...generateItems("Porta Roupeiro", 3, 45, 260),
-  ...generateItems("Lateral Externa", 2, 60, 260),
-  ...generateItems("Frente Gaveta", 6, 80, 20),
-  ...generateItems("Vista Lateral", 2, 10, 272),
-  ...generateItems("Prateleira Maleiro", 3, 100, 55),
-];
-
-const optimizerConfigAmadeirado = {
-  sheetW: 183,
-  sheetH: 275,
-  margin: 1,
-  pieceSpacing: 0.4,
-  orientation: "V" as const,
-  wastePercentage: 10,
-  items: itemsRoupeiro,
+const optimizerConfigCloset = {
+  sheetW: 275,
+  sheetH: 185,
+  margin: 0,
+  pieceSpacing: 0,
+  allowRotate: true,
+  wastePercentage: 4,
+  items: [
+    { name: "Lateral grande", w: 220, h: 45 },
+    { name: "Fundo do armário", w: 200, h: 80 },
+    { name: "Prateleira grande", w: 120, h: 45 },
+    { name: "Divisória interna", w: 85, h: 45 },
+    { name: "Porta do closet", w: 210, h: 40 },
+    { name: "Divisória estreita", w: 30, h: 45 },
+    { name: "Prateleira curta", w: 60, h: 30 },
+    { name: "Apoio estrutural", w: 30, h: 25 },
+    { name: "Peça técnica", w: 22, h: 14 },
+    { name: "Reforço vertical", w: 70, h: 10 },
+    { name: "Mini prateleira", w: 45, h: 20 },
+    { name: "Suporte de encaixe", w: 20, h: 12 },
+  ],
 };
 
 const itemsHomeTheater = [
@@ -66,15 +86,28 @@ const itemsHomeTheater = [
 
 const optimizerConfigGrafite = {
   sheetW: 275,
-  sheetH: 183,
-  margin: 1,
-  pieceSpacing: 0.4,
-  orientation: "H" as const,
-  wastePercentage: 8,
-  items: itemsHomeTheater,
+  sheetH: 185,
+  margin: 0,
+  pieceSpacing: 0,
+  allowRotate: true,
+  wastePercentage: 6,
+  items: [
+    { name: "Painel principal", w: 200, h: 180 },
+    { name: "Contrapainel", w: 190, h: 170 },
+    { name: "Nicho decorativo", w: 60, h: 30 },
+    { name: "Nicho auxiliar", w: 50, h: 25 },
+    { name: "Base inferior", w: 180, h: 40 },
+    { name: "Prateleira flutuante", w: 120, h: 25 },
+    { name: "Friso decorativo", w: 60, h: 8 },
+    { name: "Borda acabamento", w: 80, h: 10 },
+    { name: "Suporte de fixação", w: 30, h: 15 },
+    { name: "Apoio de fundo", w: 50, h: 20 },
+    { name: "Reforço para TV", w: 40, h: 25 },
+    { name: "Peça técnica painel", w: 25, h: 18 },
+  ],
 };
 
-const planBranco = new CuttingPlan(optimizerConfigBranco).calculate({
+const planCozinha = new CuttingPlan(optimizerConfigCozinha).calculate({
   includeImages: true,
 });
 
@@ -93,9 +126,9 @@ const materialBranco: MaterialPlanProps = {
   cutDirection: "VH",
   cutDirectionLabel: "Sentido: Indiferente (Otimizado)",
   pieces: [],
-  sheets: planBranco.base64Images.map((img, i) => ({
-    id: `b-sheet-${i}`,
-    label: `Chapa ${i + 1} (Horizontal)`,
+  sheets: planCozinha.base64Images.map((img, i) => ({
+    id: `s${i + 1}`,
+    label: `Chapa ${i + 1} (275x185 cm)`,
     imageBase64: img,
   })),
 };
@@ -113,16 +146,16 @@ const materialAmadeirado: MaterialPlanProps = {
   cutDirection: "V",
   cutDirectionLabel: "Sentido: Vertical (Chapa em Pé)",
   pieces: [],
-  sheets: planAmadeirado.base64Images.map((img, i) => ({
-    id: `m-sheet-${i}`,
-    label: `Chapa ${i + 1} (Vertical)`,
+  sheets: planCloset.base64Images.map((img, i) => ({
+    id: `s${i + 50}`,
+    label: `Chapa ${i + 50} (275x185 cm)`,
     imageBase64: img,
   })),
 };
-materialAmadeirado.pieces = itemsRoupeiro.slice(0, 6).map((p, i) => ({
-  id: `mp-${i}`,
-  material: materialAmadeirado,
-  label: `${p.name} (${p.w} x ${p.h} cm)`,
+materialCloset.pieces = optimizerConfigCloset.items.map((piece, i) => ({
+  id: `p${i + 100}`,
+  material: materialCloset,
+  label: `- ${piece.name} (${piece.w}x${piece.h} cm)`,
   qtde: 1,
 }));
 
@@ -133,17 +166,16 @@ const materialGrafite: MaterialPlanProps = {
   cutDirection: "H",
   cutDirectionLabel: "Sentido: Horizontal (Veio Deitado)",
   pieces: [],
-  sheets: planGrafite.base64Images.map((img, i) => ({
-    id: `g-sheet-${i}`,
-    label: `Chapa ${i + 1} (Horizontal)`,
+  sheets: planPainel.base64Images.map((img, i) => ({
+    id: `s${i + 100}`,
+    label: `Chapa ${i + 100} (275x185 cm)`,
     imageBase64: img,
   })),
 };
-
-materialGrafite.pieces = itemsHomeTheater.slice(0, 6).map((p, i) => ({
-  id: `gp-${i}`,
-  material: materialGrafite,
-  label: `${p.name} (${p.w} x ${p.h} cm)`,
+materialPainel.pieces = optimizerConfigPainel.items.map((piece, i) => ({
+  id: `p${i + 200}`,
+  material: materialPainel,
+  label: `- ${piece.name} (${piece.w}x${piece.h} cm)`,
   qtde: 1,
 }));
 

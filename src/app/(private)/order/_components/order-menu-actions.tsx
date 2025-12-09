@@ -38,7 +38,7 @@ export const OrderMenuActions = () => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const router = useRouter();
-  const { execute: handleSave } = useUpsertOrder();
+  const { execute: handleSave, isPending: isPendingUpsert } = useUpsertOrder();
   const { execute: executeCopy, isPending: isPendingCopy } = useCopyOrder();
   const { execute: executeDelete, isPending: isPendingDelete } =
     useDeleteOrder();
@@ -136,13 +136,27 @@ export const OrderMenuActions = () => {
         <Button
           className="rounded-r-none border-0 border-r border-[#d2837cda] focus:z-10"
           onClick={handleSave}
+          disabled={isPendingUpsert}
         >
-          <Icon name="folder_check" />
-          Salvar
+          {!isPendingUpsert && (
+            <>
+              <Icon name="folder_check" />
+              Salvar
+            </>
+          )}
+          {isPendingUpsert && (
+            <>
+              <Icon name="progress_activity" className="animate-spin" />{" "}
+              Salvando...
+            </>
+          )}
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="group w-8 rounded-l-none border-0 focus:z-10">
+            <Button
+              className="group w-8 rounded-l-none border-0 focus:z-10"
+              disabled={isPendingUpsert}
+            >
               <Icon
                 name="keyboard_arrow_down"
                 className="group-data-[state=OPEN]:rotate-180"
@@ -152,7 +166,17 @@ export const OrderMenuActions = () => {
           <DropdownMenuContent align="end" className="min-w-[12.5rem]">
             {order.id && (
               <DropdownMenuItem onClick={handleCopy} disabled={isPendingCopy}>
-                <Icon name="file_copy" /> Fazer cópia
+                {!isPendingCopy && (
+                  <>
+                    <Icon name="file_copy" /> Fazer cópia Salvar
+                  </>
+                )}
+                {isPendingCopy && (
+                  <>
+                    <Icon name="progress_activity" className="animate-spin" />{" "}
+                    Copiando...
+                  </>
+                )}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={handleGenerateQuote}>

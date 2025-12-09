@@ -24,7 +24,7 @@ export const SignInForm = () => {
     defaultValues: loginDefaultValues,
   });
 
-  const { execute } = useSignIn();
+  const { execute, isPending } = useSignIn();
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
     execute(values);
   };
@@ -63,8 +63,18 @@ export const SignInForm = () => {
             )}
           />
         </div>
-        <Button type="submit">
-          Entrar no sistema <Icon name="login" />
+        <Button type="submit" disabled={isPending}>
+          {!isPending && (
+            <>
+              Entrar no sistema <Icon name="login" />
+            </>
+          )}
+          {isPending && (
+            <>
+              <Icon name="progress_activity" className="animate-spin" />{" "}
+              Entrando...
+            </>
+          )}
         </Button>
       </form>
     </Form>

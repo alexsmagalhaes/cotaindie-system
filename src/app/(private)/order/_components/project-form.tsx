@@ -1,5 +1,6 @@
 "use client";
 
+import { FormWrapper } from "@/app/_components/form-wrapper";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
@@ -48,6 +49,8 @@ export const ProjectForm = ({
   }, [form.trigger, setTrigger]);
 
   const onSubmit = (values: z.infer<typeof projectSchema>) => {
+    if (form.formState.isLoading) return;
+
     const { rawAmount, ...projectData } = values;
 
     let success = false;
@@ -66,13 +69,13 @@ export const ProjectForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FormWrapper onSubmit={form.handleSubmit(onSubmit)}>
         {stepper.switch({
           pieces: () => <ProjectStepOne />,
           costs: () => <ProjectStepTwo />,
         })}
         <ProjectActions index={index} />
-      </form>
+      </FormWrapper>
     </Form>
   );
 };

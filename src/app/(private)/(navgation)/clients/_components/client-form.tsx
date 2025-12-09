@@ -1,5 +1,6 @@
 "use client";
 
+import { FormWrapper } from "@/app/_components/form-wrapper";
 import { DialogBody } from "@/components/ui/dialog";
 import {
   Form,
@@ -28,12 +29,13 @@ export const ClientForm = ({ client }: { client?: Client }) => {
   });
 
   const onSubmit = async (values: z.infer<typeof clientSchema>) => {
+    if (isPending) return;
     execute(values);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FormWrapper onSubmit={form.handleSubmit(onSubmit)}>
         <DialogBody className="grid grid-cols-1 items-start gap-3 lg:grid-cols-6">
           <ClientBasicsFields />
         </DialogBody>
@@ -56,7 +58,7 @@ export const ClientForm = ({ client }: { client?: Client }) => {
           />
         </DialogBody>
         <ClientActions isPending={isPending} />
-      </form>
+      </FormWrapper>
     </Form>
   );
 };

@@ -33,18 +33,40 @@ export const ProjectActions = ({ index }: { index?: number }) => {
     if (index !== undefined) deleteProject(index);
   };
 
+  const isPendingSubmit = form.formState.isSubmitting;
+
   return (
     <DialogFooter className="flex flex-row justify-end gap-3">
       {stepper.isLast && index === undefined && (
-        <Button type="submit">
-          <Icon name="add_2" />
-          Adicionar projeto
+        <Button type="submit" disabled={isPendingSubmit}>
+          {!isPendingSubmit && (
+            <>
+              <Icon name="add_2" />
+              Adicionar projeto
+            </>
+          )}
+          {isPendingSubmit && (
+            <>
+              <Icon name="progress_activity" className="animate-spin" />{" "}
+              Adicionando...
+            </>
+          )}
         </Button>
       )}
       {stepper.isLast && index !== undefined && (
         <Button type="submit">
-          <Icon name="folder_check" />
-          Salvar mudanças
+          {!isPendingSubmit && (
+            <>
+              <Icon name="folder_check" />
+              Salvar mudanças
+            </>
+          )}
+          {isPendingSubmit && (
+            <>
+              <Icon name="progress_activity" className="animate-spin" />{" "}
+              Salvando...
+            </>
+          )}
         </Button>
       )}
       {!stepper.isLast && (
