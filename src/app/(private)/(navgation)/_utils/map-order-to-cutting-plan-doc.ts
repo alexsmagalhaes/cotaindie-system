@@ -5,6 +5,13 @@ import type {
 } from "@/pdfs/_docs/cutting-plan-document";
 import { formatDate } from "./format-date";
 
+function getCutDirectionLabel(code?: CutDirection) {
+  if (code === "VH") return "Corte: Horizontal e vertical";
+  if (code === "V") return "Corte: Vertical";
+  if (code === "H") return "Corte: Horizontal";
+  return "";
+}
+
 export const mapOrderToCuttingPlanDoc = (
   order: Partial<Order>,
 ): CuttingPlanDocumentProps => {
@@ -49,14 +56,11 @@ export const mapOrderToCuttingPlanDoc = (
           name: material.name ?? "Material sem nome",
           code: material.code ?? "N/A",
           cutDirection: material.cutDirection ?? "V",
-          cutDirectionLabel:
-            material.cutDirection === "VH"
-              ? "Corte: Horizontal e vertical"
-              : "Corte: Horizontal",
+          cutDirectionLabel: getCutDirectionLabel(material.cutDirection),
           pieces: [],
           sheets: [],
-          sheetMeasure: measure as [number, number],
-          _sheetMeasure: measure as [number, number],
+          sheetMeasure: measure,
+          _sheetMeasure: measure,
           wastePercentage: Number(wasteTax),
         });
       }
@@ -100,7 +104,7 @@ export const mapOrderToCuttingPlanDoc = (
       items,
       margin: 1,
       pieceSpacing: 0,
-      allowRotate: mat.cutDirection === "VH",
+      orientation: mat.cutDirection,
       wastePercentage: mat.wastePercentage * 100,
     });
 

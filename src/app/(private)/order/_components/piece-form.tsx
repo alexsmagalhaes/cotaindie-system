@@ -37,6 +37,7 @@ import { NumericFormat } from "react-number-format";
 import type z from "zod";
 import { measureMap } from "../../(navgation)/_constants/mesure-map";
 import { useGetMaterials } from "../../(navgation)/_hooks/use-get-materials";
+import { cutDirectionMap } from "../../(navgation)/materials/_utils/cut-direction-map";
 import { formatMeasure } from "../_utils/format-measure";
 import {
   getPiecetDefaultValues,
@@ -360,14 +361,10 @@ export const PieceForm = ({
                   )}
                 />
                 <InputDisabled className="shrink-0 lg:mt-5.5">
-                  <Icon
-                    name={
-                      cutDirection === "VH" ? "grid_on" : "table_rows_narrow"
-                    }
-                  />
-                  {cutDirection === "VH"
-                    ? "Textura Ver. e Hor."
-                    : "Textura horiz."}
+                  {cutDirection === "VH" && <Icon name={"grid_on"} />}
+                  {cutDirection === "H" && <Icon name={"table_rows_narrow"} />}
+                  {cutDirection === "V" && <Icon name={"calendar_view_week"} />}
+                  {cutDirection && cutDirectionMap[cutDirection]}
                 </InputDisabled>
               </>
             )}
