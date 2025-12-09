@@ -8,6 +8,7 @@ import { Hr } from "../_components/hr";
 import { PdfPageLayout } from "../_components/pdf-layout";
 import { SectionTitle } from "../_components/section-title";
 import { TitledTextSection } from "../_components/title-text-section";
+import { horizontalIcon } from "../assets/horizontal-icon";
 import { vhIcon } from "../assets/vertical-horizontal-icon";
 import { verticalIcon } from "../assets/vertical-icon";
 
@@ -34,7 +35,7 @@ export interface MaterialPlanProps {
   id: string;
   name: string;
   code: string;
-  cutDirection: "V" | "VH";
+  cutDirection: "H" | "V" | "VH";
   cutDirectionLabel: string;
   pieces: PiecePlanProps[];
   sheets: SheetPlanProps[];
@@ -186,76 +187,103 @@ export const CuttingPlanDocument = ({
                       </DataGridCell>
                     </DataGridRow>
                   ))}
-                  {material.sheets.map((sheet, sheetIndex, arr) => (
-                    <View key={sheet.id} wrap={false}>
-                      <DataGridRow
-                        noBorderBottom={sheetIndex === arr.length - 1}
-                      >
-                        <DataGridCell
-                          width="100%"
-                          noBorderRight
-                          style={{ padding: 0, marginBottom: 4 }}
+                  {material.sheets.map((sheet, sheetIndex, arr) => {
+                    const isVertical =
+                      sheet.sheetMeasure &&
+                      sheet.sheetMeasure[1] > sheet.sheetMeasure[0];
+                    const maxHeight = isVertical ? 400 : 600;
+
+                    return (
+                      <View key={sheet.id} wrap={false}>
+                        <DataGridRow
+                          noBorderBottom={sheetIndex === arr.length - 1}
                         >
-                          <View style={{ padding: 8 }}>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                marginBottom: 0,
-                                paddingLeft: 5,
-                              }}
-                            >
+                          <DataGridCell
+                            width="100%"
+                            noBorderRight
+                            style={{ padding: 0, marginBottom: 4 }}
+                          >
+                            <View style={{ padding: 8 }}>
                               <View
                                 style={{
-                                  width: 16,
-                                  height: 16,
-                                  marginRight: 10,
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  marginBottom: 0,
+                                  paddingLeft: 5,
                                 }}
                               >
-                                <Image
+                                <View
                                   style={{
                                     width: 16,
                                     height: 16,
-                                  }}
-                                  src={
-                                    material.cutDirection === "VH"
-                                      ? vhIcon
-                                      : verticalIcon
-                                  }
-                                />
-                              </View>
-                              <View>
-                                <Text style={{ marginBottom: 2, marginTop: 3 }}>
-                                  {sheet.label}
-                                </Text>
-                                <Text
-                                  style={{
-                                    fontSize: 7,
-                                    color: "#444",
-                                    marginBottom: 4,
+                                    marginRight: 10,
                                   }}
                                 >
-                                  Textura/corte:{" "}
-                                  {material.cutDirection === "VH"
-                                    ? "Horizontal e Vertical"
-                                    : "Apenas Horizontal"}
-                                </Text>
+                                  {material.cutDirection === "VH" && (
+                                    <Image
+                                      style={{ width: 16, height: 16 }}
+                                      src={vhIcon}
+                                    />
+                                  )}
+                                  {material.cutDirection === "V" && (
+                                    <Image
+                                      style={{ width: 16, height: 16 }}
+                                      src={verticalIcon}
+                                    />
+                                  )}
+                                  {material.cutDirection === "H" && (
+                                    <Image
+                                      style={{ width: 16, height: 16 }}
+                                      src={horizontalIcon}
+                                    />
+                                  )}
+                                </View>
+                                <View>
+                                  <Text
+                                    style={{ marginBottom: 2, marginTop: 3 }}
+                                  >
+                                    {sheet.label}
+                                  </Text>
+                                  <Text
+                                    style={{
+                                      fontSize: 7,
+                                      color: "#444",
+                                      marginBottom: 4,
+                                    }}
+                                  >
+                                    Textura/corte:{" "}
+                                    {material.cutDirection === "VH" &&
+                                      "Horizontal e Vertical"}
+                                    {material.cutDirection === "V" &&
+                                      "Apenas Vertical"}
+                                    {material.cutDirection === "H" &&
+                                      "Apenas Horizontal"}
+                                  </Text>
+                                </View>
+                              </View>
+                              <View
+                                style={{
+                                  width: "100%",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Image
+                                  src={sheet.imageBase64}
+                                  style={{
+                                    width: "100%",
+                                    maxWidth: "100%",
+                                    maxHeight: maxHeight,
+                                    objectFit: "contain",
+                                  }}
+                                />
                               </View>
                             </View>
-                            <Image
-                              src={sheet.imageBase64}
-                              style={{
-                                width: "100%",
-                                height: "auto",
-                                backgroundColor: "#f9f9f9",
-                                objectFit: "contain",
-                              }}
-                            />
-                          </View>
-                        </DataGridCell>
-                      </DataGridRow>
-                    </View>
-                  ))}
+                          </DataGridCell>
+                        </DataGridRow>
+                      </View>
+                    );
+                  })}
                 </DataGrid>
               </View>
             );
