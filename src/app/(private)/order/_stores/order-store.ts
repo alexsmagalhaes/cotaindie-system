@@ -8,9 +8,7 @@ interface OrderStore {
 
   setStatusInfo: (data: Partial<Pick<Order, "status">>) => void;
   setReference: (
-    data: Partial<
-      Pick<Order, "name" | "client" | "initialDate" | "expirationDays">
-    >,
+    data: Partial<Pick<Order, "name" | "client" | "initialDate">>,
   ) => void;
   setExcluded: (
     data: Partial<Pick<Order, "included" | "excluded" | "teamNotes">>,
@@ -60,7 +58,6 @@ export const useOrderStore = create<OrderStore>()(
       installmentCount: 1,
       name: "",
       notes: "",
-      expirationDays: undefined,
       // projects: undefined,
       included: "",
       excluded: "",

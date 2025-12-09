@@ -1,5 +1,6 @@
 "use client";
 
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -8,7 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { StepperProvider } from "../_provider/project-stepper-provider";
 import { useOrderStore } from "../_stores/order-store";
 import { currencyFormatter } from "../_utils/currency-formatter";
 import {
@@ -16,9 +18,11 @@ import {
   type ProjectSummary,
 } from "../functions/project-summary";
 import { OrderEmptyTable } from "./order-empty-table";
+import { ProjectsDialog } from "./project-dialog";
 import { SummaryActions } from "./summary-actions";
 
 export const SummaryTable = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const { order, setRawAmount } = useOrderStore();
   const projects = order.projects ?? [];
 
@@ -35,10 +39,17 @@ export const SummaryTable = () => {
 
   if (!projects.length) {
     return (
-      <OrderEmptyTable
-        title="Adicione um novo projeto"
-        text="O orçamento deve conter ao menos um projeto."
-      />
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <OrderEmptyTable
+            title="Clique para adicionar um projeto"
+            text="O orçamento deve conter ao menos um projeto."
+          />
+        </DialogTrigger>
+        <StepperProvider>
+          <ProjectsDialog isOpen={setIsOpen} />
+        </StepperProvider>
+      </Dialog>
     );
   }
 
@@ -49,11 +60,11 @@ export const SummaryTable = () => {
     >
       <TableHeader>
         <TableRow className="bg-body-dark">
-          <TableHead className="max-w-[3rem]">N°</TableHead>
+          <TableHead className="max-w-12">N°</TableHead>
           <TableHead className="w-full">Nome do projeto</TableHead>
-          <TableHead className="max-w-[10.75rem]">Qtde</TableHead>
-          <TableHead className="max-w-[10.75rem]">Valor do projeto</TableHead>
-          <TableHead className="max-w-[10.75rem]">Valor total</TableHead>
+          <TableHead className="max-w-43">Qtde</TableHead>
+          <TableHead className="max-w-43">Valor do projeto</TableHead>
+          <TableHead className="max-w-43">Valor total</TableHead>
           <TableHead className="text-right">Ações</TableHead>
         </TableRow>
       </TableHeader>

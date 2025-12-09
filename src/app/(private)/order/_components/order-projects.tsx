@@ -60,20 +60,20 @@ export const OrderProjectsActions = () => {
     generateCuttingPlanDocument(materialDoc);
   };
   return (
-    <div className="flex gap-3">
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          <Button className="grow">
-            <Icon name="add_2" />
-            Adicionar projeto
-          </Button>
-        </DialogTrigger>
-        <StepperProvider>
-          <ProjectsDialog isOpen={setIsOpen} />
-        </StepperProvider>
-      </Dialog>
+    <>
       {hasProjects && (
-        <>
+        <div className="flex gap-3">
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button className="grow">
+                <Icon name="add_2" />
+                Adicionar projeto
+              </Button>
+            </DialogTrigger>
+            <StepperProvider>
+              <ProjectsDialog isOpen={setIsOpen} />
+            </StepperProvider>
+          </Dialog>
           <Button
             variant="secondary"
             square={isSmallScreen}
@@ -90,8 +90,8 @@ export const OrderProjectsActions = () => {
             <Icon name="crop" />
             <span className="hidden lg:inline">Plano de corte</span>
           </Button>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 };

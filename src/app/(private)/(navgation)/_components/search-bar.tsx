@@ -8,6 +8,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSearchList,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -168,16 +169,18 @@ export const SelectFilter = ({
     <Select value={currentValue || "all"} onValueChange={handleChange}>
       <Button variant="secondary" asChild className={className}>
         <SelectTrigger>
-          <SelectValue />
+          <SelectValue placeholder={deafultText} />
         </SelectTrigger>
       </Button>
-      <SelectContent align="end">
-        <SelectItem value="all">{deafultText}</SelectItem>
-        {options.map((opt) => (
-          <SelectItem key={opt.id} value={opt.id}>
-            {opt.name}
-          </SelectItem>
-        ))}
+      <SelectContent align="end" hideScrollUpButton>
+        <SelectSearchList filterKey="name">
+          <SelectItem value="all">{deafultText}</SelectItem>
+          {options.map((item) => (
+            <SelectItem key={item.id} value={item.id} data-item={item}>
+              {item.name}
+            </SelectItem>
+          ))}
+        </SelectSearchList>
       </SelectContent>
     </Select>
   );

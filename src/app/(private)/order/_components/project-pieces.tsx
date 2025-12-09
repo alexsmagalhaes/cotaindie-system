@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Icon } from "@/components/ui/icon";
 import type { ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
 import { currencyFormatter } from "../_utils/currency-formatter";
@@ -35,15 +33,10 @@ export const PiecesTotal = () => {
   );
 };
 
-export const PiecesActions = () => {
+export const PiecesActions = ({ children }: { children: ReactNode }) => {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="secondary" className="w-full">
-          <Icon name="add_2" />
-          Nova peça
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <PieceDialog />
     </Dialog>
   );

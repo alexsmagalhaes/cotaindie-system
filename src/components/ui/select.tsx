@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { cx } from "class-variance-authority";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "./icon";
 
 function Select({
@@ -75,19 +76,94 @@ interface SelectContentProps
   classNameViewport?: string;
 }
 
+type SelectSearchListProps = {
+  children: React.ReactNode;
+  filterKey: string;
+  placeholder?: string;
+};
+
+function isElementWithProps(
+  node: React.ReactNode,
+): node is React.ReactElement<{ [key: string]: any }> {
+  return !!node && typeof node === "object" && "props" in node;
+}
+
+function SelectSearchList({
+  children,
+  filterKey,
+  placeholder = "Buscar...",
+}: Readonly<SelectSearchListProps>) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const childArray = React.Children.toArray(children);
+
+  const filteredItems = useMemo(() => {
+    if (!searchTerm) return childArray;
+
+    return childArray.filter((child) => {
+      if (!isElementWithProps(child)) return false;
+
+      const item = child.props["data-item"];
+      if (!item) return true;
+
+      const value = String(item?.[filterKey] ?? "").toLowerCase();
+      return value.includes(searchTerm.toLowerCase());
+    });
+  }, [children, searchTerm, filterKey]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const t = setTimeout(() => inputRef.current?.focus(), 0);
+      return () => clearTimeout(t);
+    }
+  }, [filteredItems, searchTerm]);
+
+  return (
+    <>
+      <div className="border-b-light sticky -top-1 z-20 -mx-1 -mt-1 mb-1 flex h-(--radix-select-trigger-height) min-w-full items-center border-b bg-white px-4 py-3">
+        <Icon name="search" size={20} className="mr-2 shrink-0 opacity-50" />
+        <input
+          ref={inputRef}
+          autoFocus
+          placeholder={placeholder}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => e.stopPropagation()}
+          className="flex h-6 w-full rounded-md bg-transparent text-sm outline-none"
+        />
+      </div>
+      <SelectScrollUpButton className="sticky top-12 z-10 mx-0 mb-1" />
+      <div className="pt-0">
+        {filteredItems.length > 0 ? (
+          filteredItems
+        ) : (
+          <div className="p-4 text-center text-sm text-gray-500">
+            Sem resultados
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 function SelectContent({
   className,
   children,
   position = "popper",
   classNameViewport,
+  hideScrollUpButton = false,
   ...props
-}: Readonly<SelectContentProps>) {
+}: React.ComponentProps<typeof SelectPrimitive.Content> & {
+  classNameViewport?: string;
+  hideScrollUpButton?: boolean;
+}) {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 border-b-light rounded-default relative z-50 mt-1 flex max-h-[20rem] w-full origin-(--radix-select-content-transform-origin) flex-col overflow-x-hidden overflow-y-auto border bg-white !p-0",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 border-b-light rounded-default relative z-50 mt-1 flex max-h-80 w-full origin-(--radix-select-content-transform-origin) flex-col overflow-x-hidden overflow-y-auto border bg-white p-0!",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
           className,
@@ -95,11 +171,12 @@ function SelectContent({
         position={position}
         {...props}
       >
-        <SelectScrollUpButton />
+        {!hideScrollUpButton && <SelectScrollUpButton />}
+
         <SelectPrimitive.Viewport
           className={cn(
             position === "popper" &&
-              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] scroll-my-1",
+              "h-(--radix-select-trigger-height) w-full min-w-(--radix-select-trigger-width) scroll-my-1",
             "p-1",
             classNameViewport,
           )}
@@ -112,19 +189,6 @@ function SelectContent({
   );
 }
 
-function SelectLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof SelectPrimitive.Label>) {
-  return (
-    <SelectPrimitive.Label
-      data-slot="select-label"
-      className={cn("text-muted-foreground px-2 py-1.5 text-xs", className)}
-      {...props}
-    />
-  );
-}
-
 function SelectItem({
   className,
   children,
@@ -134,7 +198,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "rounded-default hover:bg-beige-light/50 relative flex w-full cursor-pointer items-center gap-2 px-5 py-3 select-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "rounded-default hover:bg-beige-light/50 relative flex w-full cursor-pointer items-center gap-2 truncate px-5 py-3 select-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         className,
       )}
       {...props}
@@ -201,9 +265,9 @@ export {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectScrollDownButton,
   SelectScrollUpButton,
+  SelectSearchList,
   SelectSeparator,
   SelectTrigger,
   SelectValue,

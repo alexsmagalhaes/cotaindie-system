@@ -4,13 +4,15 @@ interface PieceMeasures {
   h: number;
 }
 
+export type GrainDirection = "H" | "V" | "VH";
+
 interface OptimizerConfig {
   sheetW: number;
   sheetH: number;
   items: PieceMeasures[];
   margin: number;
   pieceSpacing: number;
-  allowRotate: boolean;
+  orientation: GrainDirection;
   wastePercentage: number;
 }
 
@@ -57,13 +59,13 @@ export class CuttingPlan {
   constructor(config: OptimizerConfig) {
     this.config = config;
 
-    const { sheetW, sheetH, items, margin, pieceSpacing, allowRotate } = config;
+    const { sheetW, sheetH, items, margin, pieceSpacing, orientation } = config;
 
     this.sheets = this.#packMaxRects(
       sheetW,
       sheetH,
       items,
-      allowRotate,
+      orientation,
       margin,
       pieceSpacing,
     );
@@ -119,6 +121,99 @@ export class CuttingPlan {
     return result;
   }
 
+  #drawWoodTexture(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    direction: "H" | "V",
+  ) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+
+    const baseColor = "#e3c099";
+    const veinColor = "rgba(139, 69, 19, 0.3)";
+
+    ctx.fillStyle = baseColor;
+    ctx.fill();
+
+    ctx.strokeStyle = veinColor;
+    ctx.lineWidth = 3;
+
+    const step = 12;
+
+    if (direction === "H") {
+      for (let i = 0; i < h; i += step + Math.random() * 8) {
+        ctx.beginPath();
+        const startY = y + i;
+        ctx.moveTo(x, startY);
+        ctx.bezierCurveTo(
+          x + w / 3,
+          startY + (Math.random() * 8 - 4),
+          x + (2 * w) / 3,
+          startY + (Math.random() * 8 - 4),
+          x + w,
+          startY,
+        );
+        ctx.stroke();
+      }
+    } else {
+      for (let i = 0; i < w; i += step + Math.random() * 8) {
+        ctx.beginPath();
+        const startX = x + i;
+        ctx.moveTo(startX, y);
+        ctx.bezierCurveTo(
+          startX + (Math.random() * 8 - 4),
+          y + h / 3,
+          startX + (Math.random() * 8 - 4),
+          y + (2 * h) / 3,
+          startX,
+          y + h,
+        );
+        ctx.stroke();
+      }
+    }
+
+    ctx.restore();
+  }
+
+  #drawTextFit(
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    baseFontSize: number,
+    isBold: boolean = false,
+    maximize: boolean = true,
+  ) {
+    if (maxWidth <= 0) return;
+
+    const UPSCALE_THRESHOLD = 1.2;
+    const MAX_GROWTH_CAP = 1.4;
+
+    let fontSize = baseFontSize;
+    const fontStyle = isBold ? "bold " : "";
+
+    ctx.font = `${fontStyle}${fontSize}px sans-serif`;
+    const textWidth = ctx.measureText(text).width;
+    const ratio = maxWidth / textWidth;
+
+    if (ratio < 1) {
+      fontSize = Math.floor(baseFontSize * ratio);
+      if (fontSize < 10) return;
+    } else if (maximize && ratio > UPSCALE_THRESHOLD) {
+      const growthFactor = Math.min(ratio, MAX_GROWTH_CAP);
+      fontSize = Math.floor(baseFontSize * growthFactor);
+    }
+
+    ctx.font = `${fontStyle}${fontSize}px sans-serif`;
+    ctx.fillText(text, x, y);
+  }
+
   #generateBase64Image(sheet: Sheet, sheetW: number, sheetH: number): string {
     if (typeof document === "undefined") {
       console.warn("Trying to generate canvas on server. Skipping...");
@@ -128,19 +223,23 @@ export class CuttingPlan {
     const unit = "cm";
     const exportCanvas = document.createElement("canvas");
     const ctx = exportCanvas.getContext("2d");
-    const padding = 20;
+    const padding = 50;
 
     if (!ctx) return "";
 
-    exportCanvas.width = 1200;
+    exportCanvas.width = 2400;
     exportCanvas.height =
       Math.round(exportCanvas.width * (sheetH / sheetW)) + padding * 2;
+
+    const sheetRatio = sheetH / sheetW;
+
+    const enableOpticalCompensation = sheetRatio > 1.25;
 
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
 
     ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 6;
     ctx.strokeRect(
       padding,
       padding,
@@ -151,47 +250,116 @@ export class CuttingPlan {
     const scaleX = (exportCanvas.width - padding * 2) / sheetW;
     const scaleY = (exportCanvas.height - padding * 2) / sheetH;
 
+    const fontNameSize = 42;
+    const fontDimSize = 38;
+
     for (const u of sheet.usedRects) {
       const x = u.x * scaleX + padding;
       const y = u.y * scaleY + padding;
       const w = u.drawnW * scaleX;
       const h = u.drawnH * scaleY;
 
-      ctx.fillStyle = u.oversize ? "#666666" : "#CCCCCC";
-      ctx.fillRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      if (u.oversize) {
+        ctx.fillStyle = "#666666";
+        ctx.fillRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      } else {
+        if (this.config.orientation === "H") {
+          this.#drawWoodTexture(ctx, x + 0.5, y + 0.5, w - 1, h - 1, "H");
+        } else if (this.config.orientation === "V") {
+          this.#drawWoodTexture(ctx, x + 0.5, y + 0.5, w - 1, h - 1, "V");
+        } else {
+          ctx.fillStyle = "#CCCCCC";
+          ctx.fillRect(x + 0.5, y + 0.5, w - 1, h - 1);
+        }
+      }
+
       ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 4;
       ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
 
       ctx.fillStyle = "#000000";
-      ctx.font = "bold 16px sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      if (u.rotated && h > w) {
+      const maxNameWidth = (limit: number) => Math.max(0, limit - 20);
+
+      ctx.font = `bold ${fontNameSize}px sans-serif`;
+      const textMetrics = ctx.measureText(u.name);
+      const textWidth = textMetrics.width;
+
+      const availW = maxNameWidth(w);
+      const availH = maxNameWidth(h);
+      const fitRatioH = availW / textWidth;
+      const fitRatioV = availH / textWidth;
+
+      const shouldRotateText = fitRatioV > fitRatioH;
+
+      if (shouldRotateText) {
         ctx.save();
         ctx.translate(x + w / 2, y + h / 2);
         ctx.rotate(-Math.PI / 2);
-        ctx.fillText(u.name, 0, 0, h - 8);
+        this.#drawTextFit(
+          ctx,
+          u.name,
+          0,
+          0,
+          availH,
+          fontNameSize,
+          true,
+          enableOpticalCompensation,
+        );
         ctx.restore();
       } else {
-        ctx.fillText(u.name, x + w / 2, y + h / 2, w - 8);
+        this.#drawTextFit(
+          ctx,
+          u.name,
+          x + w / 2,
+          y + h / 2,
+          availW,
+          fontNameSize,
+          true,
+          enableOpticalCompensation,
+        );
       }
 
       const widthLabel = `${u.rotated ? u.origH : u.origW} ${unit}`;
       const heightLabel = `${u.rotated ? u.origW : u.origH} ${unit}`;
+      const marginText = 10;
 
-      ctx.font = "16px sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "top";
-      ctx.fillText(widthLabel, x + w / 2, y + 5, Math.max(0, w - 8));
+      if (w > 60) {
+        ctx.textBaseline = "bottom";
+        ctx.textAlign = "center";
+        this.#drawTextFit(
+          ctx,
+          widthLabel,
+          x + w / 2,
+          y + h - marginText,
+          maxNameWidth(w),
+          fontDimSize,
+          false,
+          enableOpticalCompensation,
+        );
+      }
 
-      ctx.save();
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.translate(x + w - 12, y + h / 2);
-      ctx.rotate(-Math.PI / 2);
-      ctx.fillText(heightLabel, 0, 0, Math.max(0, h - 8));
-      ctx.restore();
+      if (h > 60) {
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.translate(x + w - marginText, y + h / 2);
+        ctx.rotate(-Math.PI / 2);
+
+        this.#drawTextFit(
+          ctx,
+          heightLabel,
+          0,
+          0,
+          maxNameWidth(h),
+          fontDimSize,
+          false,
+          enableOpticalCompensation,
+        );
+        ctx.restore();
+      }
     }
 
     return exportCanvas.toDataURL("image/png");
@@ -201,12 +369,13 @@ export class CuttingPlan {
     sheetW: number,
     sheetH: number,
     items: PieceMeasures[],
-    allowRotate: boolean,
+    orientation: GrainDirection,
     margin: number,
     pieceSpacing: number,
   ): Sheet[] => {
     const sheets: Sheet[] = [];
     const sortedItems = items.slice().sort((a, b) => b.w * b.h - a.w * a.h);
+    const allowRotate = orientation === "VH";
 
     for (const item of sortedItems) {
       let placed = false;

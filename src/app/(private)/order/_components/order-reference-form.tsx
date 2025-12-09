@@ -15,6 +15,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSearchList,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -43,7 +44,6 @@ export const OrderReferenceForm = () => {
       title: order.name,
       client: order.client?.id,
       startsAt: order.initialDate ? new Date(order.initialDate) : new Date(),
-      endsAt: order.expirationDays?.toString() ?? "",
     },
   });
 
@@ -83,7 +83,7 @@ export const OrderReferenceForm = () => {
           control={form.control}
           name="client"
           render={({ field }) => (
-            <FormItem className="col-span-1 lg:col-span-3">
+            <FormItem className="col-span-1 lg:col-span-4">
               <FormLabel>Cliente</FormLabel>
               <FormControl>
                 <Select
@@ -102,11 +102,17 @@ export const OrderReferenceForm = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent align="end">
-                    {clients.map((opt) => (
-                      <SelectItem key={opt.id} value={opt.id}>
-                        {opt.name}
-                      </SelectItem>
-                    ))}
+                    <SelectSearchList filterKey="name">
+                      {clients.map((item) => (
+                        <SelectItem
+                          key={item.id}
+                          value={item.id}
+                          data-item={item}
+                        >
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectSearchList>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -118,7 +124,7 @@ export const OrderReferenceForm = () => {
           control={form.control}
           name="startsAt"
           render={({ field }) => (
-            <FormItem className="col-span-1 lg:col-span-2">
+            <FormItem className="col-span-1 lg:col-span-3">
               <FormLabel>Data inicial</FormLabel>
               <FormControl>
                 <DatePicker
@@ -140,45 +146,7 @@ export const OrderReferenceForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="endsAt"
-          render={({ field }) => (
-            <FormItem className="col-span-1 lg:col-span-2">
-              <FormLabel>Validade</FormLabel>
-              <FormControl>
-                <Select
-                  value={field.value ?? ""}
-                  onValueChange={(val) => {
-                    field.onChange(val);
-                    setReference({ expirationDays: Number(val) });
-                  }}
-                >
-                  <SelectTrigger
-                    truncate
-                    placeholder="Expira em..."
-                    className="justify-between"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent align="end">
-                    {Array.from({ length: 15 }).map((_, index) => {
-                      const day = index + 1;
-                      const formatedDay = day > 1 ? "dias" : "dia";
-                      return (
-                        <SelectItem key={day} value={String(day)}>
-                          {day} {formatedDay}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </FormWrapper>
+      </form>
     </Form>
   );
 };

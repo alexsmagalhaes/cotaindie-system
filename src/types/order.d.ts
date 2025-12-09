@@ -16,7 +16,6 @@ interface Order {
   //base infor
   name: string;
   client: Client;
-  expirationDays: number;
   initialDate: string;
 
   projects: Project[];

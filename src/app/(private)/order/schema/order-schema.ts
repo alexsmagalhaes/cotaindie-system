@@ -36,7 +36,6 @@ export const orderSchema = z
 
     name: z.string(),
     client: z.string(),
-    expirationDays: z.number(),
     initialDate: z.string(),
 
     projects: z.array(projectSchema),
