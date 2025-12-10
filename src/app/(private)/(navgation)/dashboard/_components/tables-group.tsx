@@ -44,7 +44,9 @@ export const TablesGroup = () => {
 
       {materials.length > 0 && (
         <TableWrap>
-          <TableTitle>Materiais mais utilizados desde o início do</TableTitle>
+          <TableTitle>
+            Materiais mais utilizados desde o início do mês
+          </TableTitle>
           <TableContent>
             <TableMaterial data={materials} />
           </TableContent>
