@@ -55,11 +55,11 @@ export const mapOrderToQuoteDoc = (
       email: order.client?.email || "N/A",
       code: order.client?.code,
       address: {
-        street: order.client?.street || "",
-        complement: order.client?.complement || "",
-        neighborhood: order.client?.neighborhood || "",
-        city: order.client?.city || "",
-        cep: order.client?.cep || "",
+        street: order.client?.street || "N/A",
+        complement: order.client?.complement || "N/A",
+        neighborhood: order.client?.neighborhood || "N/A",
+        city: order.client?.city || "N/A",
+        cep: order.client?.cep || "N/A",
       },
     },
 

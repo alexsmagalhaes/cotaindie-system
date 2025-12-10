@@ -22,9 +22,17 @@ export const clientSchema = z.object({
     .or(z.literal("")),
   notes: z.string().optional(),
 
-  street: z.string().min(1, "Digite o nome do endereço"),
+  street: z
+    .string()
+    .min(1, "Digite o nome do endereço")
+    .optional()
+    .or(z.literal("")),
   complement: z.string().optional(),
-  neighborhood: z.string().min(1, "Digite o nome do bairro"),
+  neighborhood: z
+    .string()
+    .min(1, "Digite o nome do bairro")
+    .optional()
+    .or(z.literal("")),
   city: z.string().min(1, "Digite o nome da cidade"),
   cep: z.string("Digite um CEP válido").optional(),
 });

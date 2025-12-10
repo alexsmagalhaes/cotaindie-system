@@ -52,7 +52,7 @@ export function ClientAdressFields() {
         name="neighborhood"
         render={({ field }) => (
           <FormItem className="col-span-1 lg:col-span-2">
-            <FormLabel>Bairro</FormLabel>
+            <FormLabel isOptional>Bairro</FormLabel>
             <FormControl>
               <Input {...field} placeholder="Ex: Centro" />
             </FormControl>
@@ -65,7 +65,7 @@ export function ClientAdressFields() {
         name="street"
         render={({ field }) => (
           <FormItem className="col-span-1 lg:col-span-3">
-            <FormLabel>Endereço</FormLabel>
+            <FormLabel isOptional>Endereço</FormLabel>
             <FormControl>
               <Input {...field} placeholder="Ex: Rua da...." />
             </FormControl>
