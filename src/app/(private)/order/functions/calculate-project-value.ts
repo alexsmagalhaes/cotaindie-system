@@ -14,7 +14,7 @@ export const calculateProjectValue = (
   const commission = priceWithProfit * commissionRate;
 
   const finalValue = priceWithProfit + commission;
-  const profit = profitBeforeCommission + commission;
+  const profit = profitBeforeCommission;
 
   return {
     baseCost,

@@ -138,7 +138,7 @@ export const ChartAreaInteractive = ({
               }}
               content={
                 <ChartTooltipContent
-                  className="min-w-[10rem] p-1.5 lg:p-2.5"
+                  className="min-w-40 p-1.5 lg:p-2.5"
                   labelFormatter={(value) =>
                     new Date(
                       new Date(value + "T00:00:00Z").getTime() +

@@ -192,8 +192,8 @@ export class CuttingPlan {
   ) {
     if (maxWidth <= 0) return;
 
-    const UPSCALE_THRESHOLD = 1.2;
-    const MAX_GROWTH_CAP = 1.4;
+    const UPSCALE_THRESHOLD = 1.1;
+    const MAX_GROWTH_CAP = 1.85;
 
     let fontSize = baseFontSize;
     const fontStyle = isBold ? "bold " : "";
@@ -223,7 +223,7 @@ export class CuttingPlan {
     const unit = "cm";
     const exportCanvas = document.createElement("canvas");
     const ctx = exportCanvas.getContext("2d");
-    const padding = 50;
+    const padding = 25;
 
     if (!ctx) return "";
 
@@ -250,8 +250,8 @@ export class CuttingPlan {
     const scaleX = (exportCanvas.width - padding * 2) / sheetW;
     const scaleY = (exportCanvas.height - padding * 2) / sheetH;
 
-    const fontNameSize = 42;
-    const fontDimSize = 38;
+    const fontNameSize = 45;
+    const fontDimSize = 43;
 
     for (const u of sheet.usedRects) {
       const x = u.x * scaleX + padding;

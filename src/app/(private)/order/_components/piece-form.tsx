@@ -393,7 +393,7 @@ export const PieceForm = ({
                     </FormItem>
                   )}
                 />
-                <InputDisabled className="shrink-0 lg:mt-[1.375rem]">
+                <InputDisabled className="shrink-0 lg:mt-5.5">
                   <Icon name={"table_rows_narrow"} />
                   Comp. horizontal
                 </InputDisabled>
@@ -402,7 +402,7 @@ export const PieceForm = ({
             <InputDisabled
               className={cn(
                 measureType === "UN" && "w-full",
-                measureType !== "UN" && "mt-[1.375rem] shrink-0",
+                measureType !== "UN" && "mt-5.5 shrink-0",
               )}
             >
               Unidade: {measureType}

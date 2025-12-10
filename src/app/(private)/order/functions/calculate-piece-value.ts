@@ -1,4 +1,4 @@
-import { CuttingPlan } from "@/lib/cutting-plan";
+import { CuttingPlan, type GrainDirection } from "@/lib/cutting-plan";
 
 interface PieceCalculationResult {
   quantityInt: number;
@@ -14,7 +14,7 @@ export function calculatePieceMaterial(piece: Piece): PieceCalculationResult {
       sheetH: piece.material.measure[1],
       margin: 0,
       pieceSpacing: 0,
-      allowRotate: piece.material.cutDirection === "VH",
+      orientation: piece.material.cutDirection as GrainDirection,
       wastePercentage: piece.material.wasteTax * 100,
       items: Array.from({ length: piece.qtde }, (_, i) => ({
         name: piece.name ?? `Peça ${i + 1}`,
